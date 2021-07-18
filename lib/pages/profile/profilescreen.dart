@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/data/allposts.dart';
+import 'package:instagram_clone/pages/profile/profileappbar.dart';
 import 'package:instagram_clone/pages/profile/profiledetail.dart';
-import 'package:instagram_clone/pages/profile/profileposts.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -13,61 +14,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: new PreferredSize(
+          child: ProfileAppBar(),
+          preferredSize: Size(MediaQuery.of(context).size.width, 55)),
       body: SingleChildScrollView(
-        child: new Column(
+        child: Column(
           children: <Widget>[
-            _appBar(),
             ProfileDetail(),
-            ProfilePosts()
+            Wrap(
+              spacing: 1,
+              runSpacing: 1,
+              children: List.generate(
+                posts.length,
+                (index) {
+                  return Container(
+                    width: (MediaQuery.of(context).size.width - 3) / 3,
+                    height: (MediaQuery.of(context).size.width - 3) / 3,
+                    decoration: BoxDecoration(
+                      image: new DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage(posts[index].what_posted)),
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),
     );
-
   }
-
-Widget _appBar() {
-  return new Container(
-    color: Colors.white,
-    padding: new EdgeInsets.only(top: 25.0),
-    child: new Column(
-      children: <Widget>[
-        new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            new Padding(
-              padding: new EdgeInsets.only(left: 10.0),
-              child: new Text(
-                "UserName",
-                style: new TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new IconButton(
-                    icon: new Icon(Icons.update),
-                    iconSize: 25.0,
-                    onPressed: () {}),
-                new IconButton(
-                    icon: new Icon(Icons.person_add),
-                    iconSize: 25.0,
-                    onPressed: () {}),
-                new IconButton(
-                    icon: new Icon(Icons.format_list_bulleted),
-                    iconSize: 25.0,
-                    onPressed: () {}),
-              ],
-            )
-          ],
-        ),
-        new Container(
-          margin: new EdgeInsets.only(top: 2.0),
-          height: 1.5,
-          color: Colors.grey[300],
-        ),
-      ],
-    ),
-  );
-}
 }

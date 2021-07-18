@@ -11,13 +11,14 @@ class ProfileDetail extends StatefulWidget {
 }
 
 class _ProfileDetailState extends State<ProfileDetail> {
+  double? _height,_width;
   @override
   Widget build(BuildContext context) {
+    _height=MediaQuery.of(context).size.height;
+    _width=MediaQuery.of(context).size.width;
     return Container(
-        height: (MediaQuery.of(context).size.height-20) * (1 / 3),
         margin: EdgeInsets.all(10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -25,28 +26,27 @@ class _ProfileDetailState extends State<ProfileDetail> {
                 WGradientRing(
                   width: 0.0,
                   child: Container(
-                    width: 60.0,
-                    height: 60.0,
+                    width: _width!/5,
+                    height: _width!/5,
                     decoration: new BoxDecoration(
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.fill,
                           image: AssetImage(stories[0].what_posted)),
                     ),
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
                   ),
                 ),
-                Column(children: [Text("48"), Text('Followers')]),
-                Column(children: [Text("48"), Text('Followers')]),
-                Column(children: [Text("48"), Text('Followers')])
+                Column(children: [Text("50"), Text('Posts')]),
+                Column(children: [Text("200"), Text('Followers')]),
+                Column(children: [Text("300"), Text('Following')])
               ]),
 
             SizedBox(height: 20.0,),
             Text("doge",style: TextStyle(fontWeight: FontWeight.bold),),
             Text("I am doge"),
             SizedBox(height: 20.0,),
-            SizedBox(
-              width: MediaQuery.of(context).size.height,
+            Container(
+              width: MediaQuery.of(context).size.width,
               child: ElevatedButton(
                   onPressed: () {},
                   child: Text(
@@ -61,6 +61,6 @@ class _ProfileDetailState extends State<ProfileDetail> {
                               side: BorderSide(color: Color(0xffCBCBCB)))))),
             ),
           ],
-        ));
+        ),);
   }
 }

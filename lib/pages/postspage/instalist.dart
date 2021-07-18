@@ -10,8 +10,6 @@ class InstaList extends StatefulWidget {
 
 class _InstaListState extends State<InstaList> {
   bool isPressed = false;
-  var child=new NetworkImage(
-  "https://pbs.twimg.com/profile_images/916384996092448768/PF1TSFOE_400x400.jpg");
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
