@@ -19,17 +19,15 @@ class CategoryStoryItem extends StatelessWidget {
             border: Border.all(color: Colors.white.withOpacity(0.2))),
         child: new Padding(
           padding:
-          const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-          child: new Row(
-            children:[
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          child: new Row(children: [
             new Icon(Icons.shop_rounded),
-            new SizedBox(width:3),
+            new SizedBox(width: 3),
             new Text(
               name,
               style: new TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
             ),
-          ]
-          ),
+          ]),
         ),
       ),
     );

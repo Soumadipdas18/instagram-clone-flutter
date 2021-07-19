@@ -10,11 +10,20 @@ class InstaList extends StatefulWidget {
 
 class _InstaListState extends State<InstaList> {
   bool isPressed = false;
+
   @override
   Widget build(BuildContext context) {
+    final _snackbar1 = SnackBar(
+      backgroundColor: Theme.of(context).primaryColor,
+      content: Text(
+        'You have liked the post',
+        style: TextStyle(color: Colors.blueAccent),
+      ),
+      behavior: SnackBarBehavior.floating,
+    );
     var deviceSize = MediaQuery.of(context).size;
     return ListView.builder(
-      itemCount: posts.length+1,
+      itemCount: posts.length + 1,
       itemBuilder: (context, index) => index == 0
           ? new SizedBox(
               child: new InstaStories(),
@@ -33,7 +42,6 @@ class _InstaListState extends State<InstaList> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-
                           new Container(
                             height: 40.0,
                             width: 40.0,
@@ -41,15 +49,15 @@ class _InstaListState extends State<InstaList> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                   fit: BoxFit.fill,
-                                  image: AssetImage(posts[index-1].what_posted)
+                                  image:
+                                      AssetImage(posts[index - 1].what_posted)),
                             ),
-                          ),
                           ),
                           new SizedBox(
                             width: 10.0,
                           ),
                           new Text(
-                            posts[index-1].who_posted,
+                            posts[index - 1].who_posted,
                             style: TextStyle(fontWeight: FontWeight.w800),
                           )
                         ],
@@ -67,8 +75,7 @@ class _InstaListState extends State<InstaList> {
                   decoration: new BoxDecoration(
                     image: new DecorationImage(
                         fit: BoxFit.fill,
-                        image:AssetImage(posts[index-1].what_posted)
-                ),
+                        image: AssetImage(posts[index - 1].what_posted)),
                   ),
                 ),
                 Padding(
@@ -86,6 +93,9 @@ class _InstaListState extends State<InstaList> {
                             color: isPressed ? Colors.red : Colors.black,
                             iconSize: 25,
                             onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(_snackbar1);
+
                               setState(() {
                                 isPressed = !isPressed;
                               });
@@ -109,23 +119,29 @@ class _InstaListState extends State<InstaList> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    "${posts[index-1].who_liked.length} likes",
+                    "${posts[index - 1].who_liked.length} likes",
                     style: TextStyle(fontWeight: FontWeight.w400),
                   ),
                 ),
-                SizedBox(height: 3.0,),
+                SizedBox(
+                  height: 3.0,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    posts[index-1].caption_post,
+                    posts[index - 1].caption_post,
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
-                SizedBox(height: 6.0,),
+                SizedBox(
+                  height: 6.0,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child:
-                  GestureDetector(onTap:(){},child: Text("View all comments", style: TextStyle(color: Colors.grey))),
+                  child: GestureDetector(
+                      onTap: () {},
+                      child: Text("View all comments",
+                          style: TextStyle(color: Colors.grey))),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 6.0, 0.0, 8.0),
@@ -138,8 +154,9 @@ class _InstaListState extends State<InstaList> {
                         decoration: new BoxDecoration(
                           shape: BoxShape.circle,
                           image: new DecorationImage(
-                              fit: BoxFit.fill,
-                              image: new AssetImage(posts[index-1].what_posted),),
+                            fit: BoxFit.fill,
+                            image: new AssetImage(posts[index - 1].what_posted),
+                          ),
                         ),
                       ),
                       new SizedBox(
@@ -158,8 +175,8 @@ class _InstaListState extends State<InstaList> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child:
-                      Text(posts[index-1].when_posted, style: TextStyle(color: Colors.grey)),
+                  child: Text(posts[index - 1].when_posted,
+                      style: TextStyle(color: Colors.grey)),
                 ),
                 SizedBox(
                   height: 10.0,

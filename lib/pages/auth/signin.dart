@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/constants/constants.dart';
 
 class Signinpage extends StatefulWidget {
   const Signinpage({Key? key}) : super(key: key);
@@ -8,7 +9,6 @@ class Signinpage extends StatefulWidget {
 }
 
 class _SigninpageState extends State<Signinpage> {
-  String dropdownValue = 'English';
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   int buttonColor = 0xff26A9FF;
@@ -16,54 +16,34 @@ class _SigninpageState extends State<Signinpage> {
 
   @override
   Widget build(BuildContext context) {
-
-    double deviseWidth = MediaQuery.of(context).size.width;
+    double deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 90,
-          ),
+              minHeight: MediaQuery.of(context).size.height - 90,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.topCenter,
-                    child: DropdownButton<String>(
-                      dropdownColor: Colors.white70,
-                      value: dropdownValue,
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 24,
-                      elevation: 10,
-                      style: TextStyle(color: Colors.black54),
-                      underline: Container(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          dropdownValue = newValue!;
-                        });
-                      },
-                      items: <String>['English', 'Arabic', 'Italian', 'French']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value, style: TextStyle(fontSize: 16),),
-                        );
-                      }).toList(),
-                    )
+                SizedBox(
+                  height: deviceWidth * .04,
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('assets/instagram_logo.png',
-                      height: deviseWidth * .20,
+                    Image.asset(
+                      'assets/instagram_logo.png',
+                      height: deviceWidth * .20,
                     ),
-                    SizedBox(height: deviseWidth * .05,),
+                    SizedBox(
+                      height: deviceWidth * .05,
+                    ),
                     Container(
-                      width: deviseWidth * .90,
-                      height: deviseWidth * .14,
+                      width: deviceWidth * .90,
+                      height: deviceWidth * .14,
                       decoration: BoxDecoration(
                         color: Color(0xffE8E8E8),
                         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -72,18 +52,19 @@ class _SigninpageState extends State<Signinpage> {
                         padding: EdgeInsets.symmetric(horizontal: 15),
                         child: Center(
                           child: TextField(
-                            onChanged: (text){
+                            onChanged: (text) {
                               setState(() {
-                                if(usernameController.text.length >= 2 && passwordController.text.length >= 2){
+                                if (usernameController.text.length >= 2 &&
+                                    passwordController.text.length >= 2) {
                                   inputTextNotNull = true;
-                                }else{
+                                } else {
                                   inputTextNotNull = false;
                                 }
                               });
                             },
                             controller: usernameController,
                             style: TextStyle(
-                              fontSize: deviseWidth * .040,
+                              fontSize: deviceWidth * .040,
                             ),
                             decoration: InputDecoration.collapsed(
                               hintText: 'Phone number , email or username',
@@ -92,10 +73,12 @@ class _SigninpageState extends State<Signinpage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: deviseWidth * .04,),
+                    SizedBox(
+                      height: deviceWidth * .04,
+                    ),
                     Container(
-                      width: deviseWidth * .90,
-                      height: deviseWidth * .14,
+                      width: deviceWidth * .90,
+                      height: deviceWidth * .14,
                       decoration: BoxDecoration(
                         color: Color(0xffE8E8E8),
                         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -104,11 +87,12 @@ class _SigninpageState extends State<Signinpage> {
                         padding: EdgeInsets.symmetric(horizontal: 15),
                         child: Center(
                           child: TextField(
-                            onChanged: (text){
+                            onChanged: (text) {
                               setState(() {
-                                if(usernameController.text.length >= 2 && passwordController.text.length >= 2){
+                                if (usernameController.text.length >= 2 &&
+                                    passwordController.text.length >= 2) {
                                   inputTextNotNull = true;
-                                }else{
+                                } else {
                                   inputTextNotNull = false;
                                 }
                               });
@@ -116,7 +100,7 @@ class _SigninpageState extends State<Signinpage> {
                             controller: passwordController,
                             obscureText: true,
                             style: TextStyle(
-                              fontSize: deviseWidth * .040,
+                              fontSize: deviceWidth * .040,
                             ),
                             decoration: InputDecoration.collapsed(
                               hintText: 'Password',
@@ -125,76 +109,83 @@ class _SigninpageState extends State<Signinpage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: deviseWidth * .04,),
-                    inputTextNotNull?
-                    GestureDetector(
-                      onLongPressStart: (s){
-                        setState(() {
-                          buttonColor = 0xff78C9FF;
-                        });
-                      },
-                      onLongPressEnd: (s){
-                        setState(() {
-                          buttonColor = 0xff26A9FF;
-                        });
-                      },
-                      onTap: (){
-                        print('Log In');
-                      },
-
-                      child: Container(
-                        width: deviseWidth * .90,
-                        height: deviseWidth * .14,
-                        decoration: BoxDecoration(
-                          color: Color(buttonColor),
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Log In',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: deviseWidth * .040,
-                              fontWeight: FontWeight.bold,
+                    SizedBox(
+                      height: deviceWidth * .04,
+                    ),
+                    inputTextNotNull
+                        ? GestureDetector(
+                            onLongPressStart: (s) {
+                              setState(() {
+                                buttonColor = 0xff78C9FF;
+                              });
+                            },
+                            onLongPressEnd: (s) {
+                              setState(() {
+                                buttonColor = 0xff26A9FF;
+                              });
+                            },
+                            onTap: () {
+                              Navigator.pushNamed(context, HOME);
+                            },
+                            child: Container(
+                              width: deviceWidth * .90,
+                              height: deviceWidth * .14,
+                              decoration: BoxDecoration(
+                                color: Color(buttonColor),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Log In',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: deviceWidth * .040,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            width: deviceWidth * .90,
+                            height: deviceWidth * .14,
+                            decoration: BoxDecoration(
+                              color: Color(0xff78C9FF),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Log In',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: deviceWidth * .040,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ):
-                    Container(
-                      width: deviseWidth * .90,
-                      height: deviseWidth * .14,
-                      decoration: BoxDecoration(
-                        color: Color(0xff78C9FF),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Log In',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: deviseWidth * .040,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                    SizedBox(
+                      height: deviceWidth * .035,
                     ),
-                    SizedBox(height: deviseWidth * .035,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Forgot your login details? ',
+                        Text(
+                          'Forgot your login details? ',
                           style: TextStyle(
-                            fontSize: deviseWidth * .035,
+                            fontSize: deviceWidth * .035,
                           ),
                         ),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             print('Get help');
                           },
-                          child: Text('Get help',
+                          child: Text(
+                            'Get help',
                             style: TextStyle(
-                              fontSize: deviseWidth * .035,
+                              fontSize: deviceWidth * .035,
                               color: Color(0xff002588),
                               fontWeight: FontWeight.bold,
                             ),
@@ -202,41 +193,54 @@ class _SigninpageState extends State<Signinpage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: deviseWidth * .040,),
+                    SizedBox(
+                      height: deviceWidth * .040,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           height: 1,
-                          width: deviseWidth * .40,
+                          width: deviceWidth * .40,
                           color: Color(0xffA2A2A2),
                         ),
-                        SizedBox(width: 10,),
-                        Text('OR',
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'OR',
                           style: TextStyle(
-                            fontSize: deviseWidth * .040,
+                            fontSize: deviceWidth * .040,
                           ),
                         ),
-                        SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Container(
                           height: 1,
-                          width: deviseWidth * .40,
+                          width: deviceWidth * .40,
                           color: Color(0xffA2A2A2),
                         ),
                       ],
                     ),
-                    SizedBox(height: deviseWidth * .06,),
+                    SizedBox(
+                      height: deviceWidth * .06,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset('assets/facebook.png',
-                          height: deviseWidth * .060,
+                        Image.asset(
+                          'assets/facebook.png',
+                          height: deviceWidth * .060,
                         ),
-                        SizedBox(width: 5,),
-                        Text('Login with facebook',
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Login with facebook',
                           style: TextStyle(
                             color: Color(0xff1877f2),
-                            fontSize: deviseWidth * .040,
+                            fontSize: deviceWidth * .040,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -245,32 +249,36 @@ class _SigninpageState extends State<Signinpage> {
                   ],
                 ),
                 Container(
-                  width: deviseWidth,
+                  width: deviceWidth,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        width: deviseWidth,
+                        width: deviceWidth,
                         height: 1,
                         color: Color(0xffA2A2A2),
                       ),
-                      SizedBox(height: 8,),
+                      SizedBox(
+                        height: 8,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Don't have an account? ",
+                          Text(
+                            "Don't have an account? ",
                             style: TextStyle(
-                              fontSize: deviseWidth * .040,
+                              fontSize: deviceWidth * .040,
                             ),
                           ),
                           GestureDetector(
-                            onTap: (){
-                              print('Sign up');
+                            onTap: () {
+                              Navigator.pushReplacementNamed(context, SIGN_UP);
                             },
-                            child: Text('Sign up',
+                            child: Text(
+                              'Sign up',
                               style: TextStyle(
                                 color: Color(0xff00258B),
-                                fontSize: deviseWidth * .040,
+                                fontSize: deviceWidth * .040,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

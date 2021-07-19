@@ -14,27 +14,25 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
       child: new Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.grey.shade200)),),
+          border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+        ),
         child: new Column(
           children: <Widget>[
             new Row(
               children: <Widget>[
                 new Spacer(),
-
                 new IconButton(
-                  icon:new Icon(Icons.lock),
-                  onPressed: (){},
+                  icon: new Icon(Icons.lock),
+                  onPressed: () {},
                 ),
-
                 new Text(
                   "doge",
                   style: new TextStyle(fontWeight: FontWeight.bold),
                 ),
                 new IconButton(
-                  icon:new Icon(Icons.arrow_drop_down),
-                  onPressed: (){},
+                  icon: new Icon(Icons.arrow_drop_down),
+                  onPressed: () {},
                 ),
-
                 new Spacer()
               ],
             ),

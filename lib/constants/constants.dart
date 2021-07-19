@@ -3,3 +3,4 @@ final String SIGN_UP ='signup';
 final String HOME='instahome';
 final String PROFILE='profilescreen';
 final String DMPAGE='dm';
+final String WELCOME='welcomescreen';

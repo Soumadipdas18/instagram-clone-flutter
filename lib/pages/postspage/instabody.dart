@@ -21,7 +21,7 @@ class InstaBody extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
               child: IconButton(
-                onPressed:()=>Navigator.pushNamed(context, DMPAGE),
+                onPressed: () => Navigator.pushNamed(context, DMPAGE),
                 icon: Icon(
                   Icons.send,
                   color: Colors.black,

@@ -35,12 +35,20 @@ class InstaStories extends StatelessWidget {
                           margin: const EdgeInsets.symmetric(horizontal: 8.0),
                         ),
                       ),
-                      SizedBox(height: 3.0,),
-                      if(stories[index].who_posted.length>6)
-                      Text(stories[index].who_posted.replaceRange(
-                          6, stories[index].who_posted.length, '..'),style: TextStyle(fontWeight: FontWeight.w400),),
-                      if(stories[index].who_posted.length<=6)
-                        Text(stories[index].who_posted,style: TextStyle(fontWeight: FontWeight.w400),),
+                      SizedBox(
+                        height: 3.0,
+                      ),
+                      if (stories[index].who_posted.length > 6)
+                        Text(
+                          stories[index].who_posted.replaceRange(
+                              6, stories[index].who_posted.length, '..'),
+                          style: TextStyle(fontWeight: FontWeight.w400),
+                        ),
+                      if (stories[index].who_posted.length <= 6)
+                        Text(
+                          stories[index].who_posted,
+                          style: TextStyle(fontWeight: FontWeight.w400),
+                        ),
                     ]),
                     index == 0
                         ? Positioned(
@@ -56,7 +64,7 @@ class InstaStories extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
-                              onTap: (){},
+                              onTap: () {},
                             ))
                         : new Container()
                   ],

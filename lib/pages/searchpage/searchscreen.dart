@@ -13,11 +13,36 @@ class Searchpage extends StatefulWidget {
 
 class _SearchpageState extends State<Searchpage> {
   Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: Appbar(),
+        body: new StaggeredGridView.countBuilder(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          itemCount: 60,
+          itemBuilder: (BuildContext context, int index) => new Container(
+              color: Colors.green,
+              child: new Center(
+                child: new CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: new Text('$index'),
+                ),
+              )),
+          staggeredTileBuilder: (int index) => new StaggeredTile.count(
+              (index - 1) % 9 == 0 && index != 0 ? 2 : 1,
+              (index - 1) % 9 == 0 && index != 0 ? 2 : 1),
+          mainAxisSpacing: 1.0,
+          crossAxisSpacing: 1.0,
+        ));
+  }
+
+  PreferredSizeWidget Appbar() {
     var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    return PreferredSize(
       child: Column(
         children: <Widget>[
-          SizedBox(height: 20.0,),
+          SizedBox(
+            height: 20.0,
+          ),
           SafeArea(
             child: Row(
               children: <Widget>[
@@ -25,14 +50,14 @@ class _SearchpageState extends State<Searchpage> {
                   width: 10,
                 ),
                 Container(
-                  width: size.width - 30,
+                  width: size.width - 20,
                   height: 45,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.grey.shade300),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Search',
+                        hintText: 'Search',
                         border: InputBorder.none,
                         prefixIcon: Icon(
                           Icons.search,
@@ -68,28 +93,10 @@ class _SearchpageState extends State<Searchpage> {
           ),
           SizedBox(
             height: 10,
-          ),
-          new StaggeredGridView.countBuilder(
-            crossAxisCount: 3,
-            shrinkWrap: true,
-            itemCount: 60,
-            itemBuilder: (BuildContext context, int index) => new Container(
-                color: Colors.green,
-                child: new Center(
-                  child: new CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: new Text('$index'),
-                  ),
-                )),
-            staggeredTileBuilder: (int index) =>
-            new StaggeredTile.count( (index-1)%9==0&&index!=0? 2 :1,  (index-1)%9==0&&index!=0? 2 : 1),
-            mainAxisSpacing: 1.0,
-            crossAxisSpacing: 1.0,
           )
         ],
       ),
+      preferredSize: new Size(size.width, 140),
     );
   }
 }
-
-
