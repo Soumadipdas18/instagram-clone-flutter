@@ -1,10 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/constants/constants.dart';
 import 'package:instagram_clone/data/allstories.dart';
 import 'package:instagram_clone/models/gradient_ring.dart';
+import 'package:instagram_clone/pages/profile/editprofile.dart';
 
 class ProfileDetail extends StatefulWidget {
-  const ProfileDetail({Key? key}) : super(key: key);
+  const ProfileDetail(
+      {Key? key, required this.username, required this.bio, required this.phno})
+      : super(key: key);
+  final String username, bio, phno;
 
   @override
   _ProfileDetailState createState() => _ProfileDetailState();
@@ -12,6 +18,18 @@ class ProfileDetail extends StatefulWidget {
 
 class _ProfileDetailState extends State<ProfileDetail> {
   double? _height, _width;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  late String? _photoURL;
+  late final String uid;
+  late final User user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = auth.currentUser!;
+    uid = user.uid;
+    _photoURL = auth.currentUser!.photoURL;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +48,12 @@ class _ProfileDetailState extends State<ProfileDetail> {
                 height: _width! / 5,
                 decoration: new BoxDecoration(
                   shape: BoxShape.circle,
-                  image: new DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage(stories[0].what_posted)),
+                  image: _photoURL != null
+                      ? DecorationImage(
+                          image: NetworkImage(_photoURL!), fit: BoxFit.cover)
+                      : DecorationImage(
+                          image: AssetImage('assets/posts/doge.jpg'),
+                          fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -44,17 +65,33 @@ class _ProfileDetailState extends State<ProfileDetail> {
             height: 20.0,
           ),
           Text(
-            "doge",
+            widget.username,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          Text("I am doge"),
+          Text(widget.bio),
           SizedBox(
             height: 20.0,
           ),
           Container(
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => EditProfileScreen(
+                          username: widget.username,
+                          email: user.email!,
+                          uid: uid,
+                          bio: widget.bio,
+                          phno: widget.phno),
+                    ),
+                  ).whenComplete(() {
+                    setState(() {
+                      Navigator.pushReplacementNamed(context, HOME);
+                    });
+                  });
+                },
                 child: Text(
                   "Edit Your Profile",
                   style: TextStyle(color: Colors.black),

@@ -3,6 +3,10 @@ import 'package:instagram_clone/constants/constants.dart';
 import 'instalist.dart';
 
 class InstaBody extends StatelessWidget {
+  final String uid;
+
+  InstaBody(this.uid);
+
   @override
   Widget build(BuildContext context) {
     return new SafeArea(
@@ -32,7 +36,12 @@ class InstaBody extends StatelessWidget {
         ),
         body: new Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[Flexible(child: InstaList())],
+          children: <Widget>[
+            Flexible(
+                child: InstaList(
+              uid: uid,
+            ))
+          ],
         ),
       ),
     );
