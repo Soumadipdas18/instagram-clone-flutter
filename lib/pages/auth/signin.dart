@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:instagram_clone/constants/constants.dart';
+import 'package:instagram_clone/firebase/auth.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class Signinpage extends StatefulWidget {
   const Signinpage({Key? key}) : super(key: key);
@@ -9,15 +12,19 @@ class Signinpage extends StatefulWidget {
 }
 
 class _SigninpageState extends State<Signinpage> {
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   int buttonColor = 0xff26A9FF;
   bool inputTextNotNull = false;
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
+  bool readonly = false;
+  final keys = GlobalKey<FormState>();
+  Auth auth = new Auth();
 
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -31,107 +38,180 @@ class _SigninpageState extends State<Signinpage> {
                 SizedBox(
                   height: deviceWidth * .04,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/instagram_logo.png',
-                      height: deviceWidth * .20,
-                    ),
-                    SizedBox(
-                      height: deviceWidth * .05,
-                    ),
-                    Container(
-                      width: deviceWidth * .90,
-                      height: deviceWidth * .14,
-                      decoration: BoxDecoration(
-                        color: Color(0xffE8E8E8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                Form(
+                  key: keys,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/instagram_logo.png',
+                        height: deviceWidth * .20,
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15),
-                        child: Center(
-                          child: TextField(
-                            onChanged: (text) {
-                              setState(() {
-                                if (usernameController.text.length >= 2 &&
-                                    passwordController.text.length >= 2) {
-                                  inputTextNotNull = true;
-                                } else {
-                                  inputTextNotNull = false;
-                                }
-                              });
-                            },
-                            controller: usernameController,
-                            style: TextStyle(
-                              fontSize: deviceWidth * .040,
-                            ),
-                            decoration: InputDecoration.collapsed(
-                              hintText: 'Phone number , email or username',
+                      SizedBox(
+                        height: deviceWidth * .05,
+                      ),
+                      Container(
+                        width: deviceWidth * .90,
+                        height: deviceWidth * .14,
+                        decoration: BoxDecoration(
+                          color: Color(0xffE8E8E8),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Center(
+                            child: TextFormField(
+                              readOnly: readonly,
+                              onChanged: (text) {
+                                setState(() {
+                                  if (emailController.text.length >= 2 &&
+                                      passwordController.text.length >= 2) {
+                                    inputTextNotNull = true;
+                                    _btnController.stop();
+                                  } else {
+                                    inputTextNotNull = false;
+                                  }
+                                });
+                              },
+                              validator: (value) {
+                                return RegExp(
+                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                        .hasMatch(value!)
+                                    ? null
+                                    : "Please Enter Correct Email";
+                              },
+                              controller: emailController,
+                              style: TextStyle(
+                                fontSize: deviceWidth * .040,
+                              ),
+                              decoration: InputDecoration.collapsed(
+                                hintText: 'Email Address',
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: deviceWidth * .04,
-                    ),
-                    Container(
-                      width: deviceWidth * .90,
-                      height: deviceWidth * .14,
-                      decoration: BoxDecoration(
-                        color: Color(0xffE8E8E8),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      SizedBox(
+                        height: deviceWidth * .04,
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15),
-                        child: Center(
-                          child: TextField(
-                            onChanged: (text) {
-                              setState(() {
-                                if (usernameController.text.length >= 2 &&
-                                    passwordController.text.length >= 2) {
-                                  inputTextNotNull = true;
-                                } else {
-                                  inputTextNotNull = false;
-                                }
-                              });
-                            },
-                            controller: passwordController,
-                            obscureText: true,
-                            style: TextStyle(
-                              fontSize: deviceWidth * .040,
-                            ),
-                            decoration: InputDecoration.collapsed(
-                              hintText: 'Password',
+                      Container(
+                        width: deviceWidth * .90,
+                        height: deviceWidth * .14,
+                        decoration: BoxDecoration(
+                          color: Color(0xffE8E8E8),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Center(
+                            child: TextFormField(
+                              readOnly: readonly,
+                              onChanged: (text) {
+                                setState(() {
+                                  if (emailController.text.length >= 2 &&
+                                      passwordController.text.length >= 2) {
+                                    inputTextNotNull = true;
+                                    _btnController.stop();
+                                  } else {
+                                    inputTextNotNull = false;
+                                  }
+                                });
+                              },
+                              validator: (value) {
+                                return value!.length > 6
+                                    ? null
+                                    : "Enter Password 6+ characters";
+                              },
+                              controller: passwordController,
+                              obscureText: true,
+                              style: TextStyle(
+                                fontSize: deviceWidth * .040,
+                              ),
+                              decoration: InputDecoration.collapsed(
+                                hintText: 'Password',
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: deviceWidth * .04,
-                    ),
-                    inputTextNotNull
-                        ? GestureDetector(
-                            onLongPressStart: (s) {
-                              setState(() {
-                                buttonColor = 0xff78C9FF;
-                              });
-                            },
-                            onLongPressEnd: (s) {
-                              setState(() {
-                                buttonColor = 0xff26A9FF;
-                              });
-                            },
-                            onTap: () {
-                              Navigator.pushNamed(context, HOME);
-                            },
-                            child: Container(
+                      SizedBox(
+                        height: deviceWidth * .04,
+                      ),
+                      inputTextNotNull
+                          ? RoundedLoadingButton(
+                              controller: _btnController,
+                              onPressed: () async {
+                                if (keys.currentState!.validate()) {
+                                  setState(() {
+                                    readonly = true;
+                                  });
+                                  FocusScope.of(context).unfocus();
+                                  String msg = await auth.signIn(
+                                      emailController.text.trim(),
+                                      passwordController.text.trim());
+                                  print(msg);
+                                  if (msg == 'Logged in successfully') {
+                                    await Phoenix.rebirth(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor:
+                                            Theme.of(context).primaryColor,
+                                        content: Text(
+                                          msg,
+                                          style: TextStyle(
+                                              color: Colors.blueAccent),
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                    _btnController.reset();
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor:
+                                            Theme.of(context).primaryColor,
+                                        content: Text(
+                                          msg,
+                                          style: TextStyle(
+                                              color: Colors.blueAccent),
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                    _btnController.error();
+                                    setState(() {
+                                      readonly = false;
+                                    });
+                                  }
+                                } else {
+                                  _btnController.error();
+                                }
+                              },
+                              child: Container(
+                                width: deviceWidth * .90,
+                                height: deviceWidth * .14,
+                                decoration: BoxDecoration(
+                                  color: Color(buttonColor),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Log In',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: deviceWidth * .040,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(
                               width: deviceWidth * .90,
                               height: deviceWidth * .14,
                               decoration: BoxDecoration(
-                                color: Color(buttonColor),
+                                color: Color(0xff78C9FF),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
                               ),
@@ -146,107 +226,88 @@ class _SigninpageState extends State<Signinpage> {
                                 ),
                               ),
                             ),
-                          )
-                        : Container(
-                            width: deviceWidth * .90,
-                            height: deviceWidth * .14,
-                            decoration: BoxDecoration(
-                              color: Color(0xff78C9FF),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
+                      SizedBox(
+                        height: deviceWidth * .035,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Forgot your login details? ',
+                            style: TextStyle(
+                              fontSize: deviceWidth * .035,
                             ),
-                            child: Center(
-                              child: Text(
-                                'Log In',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: deviceWidth * .040,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              print('Get help');
+                            },
+                            child: Text(
+                              'Get help',
+                              style: TextStyle(
+                                fontSize: deviceWidth * .035,
+                                color: Color(0xff002588),
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                    SizedBox(
-                      height: deviceWidth * .035,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Forgot your login details? ',
-                          style: TextStyle(
-                            fontSize: deviceWidth * .035,
+                        ],
+                      ),
+                      SizedBox(
+                        height: deviceWidth * .2,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 1,
+                            width: deviceWidth * .40,
+                            color: Color(0xffA2A2A2),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            print('Get help');
-                          },
-                          child: Text(
-                            'Get help',
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'OR',
                             style: TextStyle(
-                              fontSize: deviceWidth * .035,
-                              color: Color(0xff002588),
-                              fontWeight: FontWeight.bold,
+                              fontSize: deviceWidth * .040,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: deviceWidth * .040,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 1,
-                          width: deviceWidth * .40,
-                          color: Color(0xffA2A2A2),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'OR',
-                          style: TextStyle(
-                            fontSize: deviceWidth * .040,
+                          SizedBox(
+                            width: 10,
                           ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Container(
-                          height: 1,
-                          width: deviceWidth * .40,
-                          color: Color(0xffA2A2A2),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: deviceWidth * .06,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/facebook.png',
-                          height: deviceWidth * .060,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          'Login with facebook',
-                          style: TextStyle(
-                            color: Color(0xff1877f2),
-                            fontSize: deviceWidth * .040,
-                            fontWeight: FontWeight.w800,
+                          Container(
+                            height: 1,
+                            width: deviceWidth * .40,
+                            color: Color(0xffA2A2A2),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      SizedBox(
+                        height: deviceWidth * .06,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/facebook.png',
+                            height: deviceWidth * .060,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Login with facebook',
+                            style: TextStyle(
+                              color: Color(0xff1877f2),
+                              fontSize: deviceWidth * .040,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 Container(
                   width: deviceWidth,

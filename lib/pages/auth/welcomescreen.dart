@@ -12,17 +12,17 @@ class Welcome extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: deviceWidth * 0.1,
+                height: deviceWidth * 0.05,
               ),
               Image.asset(
                 'assets/instagram_logo.png',
                 height: deviceWidth * .20,
               ),
               SizedBox(
-                height: deviceWidth * 0.1,
+                height: deviceWidth * 0.5,
               ),
               SizedBox(
-                width: 325,
+                width: MediaQuery.of(context).size.width-30,
                 height: 50,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -41,7 +41,7 @@ class Welcome extends StatelessWidget {
                 height: deviceWidth * 0.1,
               ),
               SizedBox(
-                width: 325,
+                width:  MediaQuery.of(context).size.width-30,
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
