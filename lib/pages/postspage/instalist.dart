@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/data/allposts.dart';
@@ -18,6 +19,7 @@ class _InstaListState extends State<InstaList> {
   bool isPressed = false;
   bool loading = true;
   List<allposts> posts = [];
+FirebaseAuth auth=FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final _snackbar1 = SnackBar(
@@ -34,13 +36,13 @@ class _InstaListState extends State<InstaList> {
         : RefreshIndicator(
             onRefresh: _pullRefresh,
             child: ListView.builder(
-              itemCount: posts.length + 1,
+              itemCount:  posts.length + 1,
               itemBuilder: (context, index) => index == 0
                   ? new SizedBox(
                       child: new InstaStories(),
                       height: 120,
                     )
-                  : Column(
+                  : posts.length==0?Center(child:Text("No posts yet")):Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -172,8 +174,8 @@ class _InstaListState extends State<InstaList> {
                                   shape: BoxShape.circle,
                                   image: new DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: new AssetImage(
-                                        posts[index - 1].what_posted),
+                                    image: new NetworkImage(
+                                       auth.currentUser!.photoURL! ),
                                   ),
                                 ),
                               ),
@@ -211,25 +213,34 @@ class _InstaListState extends State<InstaList> {
   }
 
   var collectionRef = FirebaseFirestore.instance.collection('allposts');
+  var last;
 
   getallposts(String uid) async {
     print('getallposts called');
     posts.clear();
-    await collectionRef.get().then(
-          (querysnapshot) => querysnapshot.docs.forEach((doc) {
-            posts.insert(
-              posts.length,
-              allposts(
-                  who_posted: doc['who_posted'],
-                  when_posted: 'ddd',
-                  what_posted: doc['url'],
-                  caption_post: doc['caption'],
-                  who_liked: ['a', 'b', 'c', 'd'],
-                  who_posted_url: doc['who_posted_url']),
-            );
-            posts = List.from(posts.reversed);
-          }),
-        );
+    if(collectionRef.snapshots().length!=0) {
+      await collectionRef
+          .orderBy('time', descending: true)
+          .get()
+          .then((querysnapshot) {
+        querysnapshot.docs.forEach((doc) {
+          posts.insert(
+            posts.length,
+            allposts(
+                who_posted: doc['who_posted_username'],
+                when_posted: 'ddd',
+                what_posted: doc['url'],
+                caption_post: doc['caption'],
+                who_liked: ['a', 'b', 'c', 'd'],
+                who_posted_url: doc['who_posted_url']),
+          );
+          posts = List.from(posts.reversed);
+        });
+        last = querysnapshot.docs[querysnapshot.docs.length - 1];
+        print(last);
+      });
+    }
+   posts = new List.from(posts.reversed);
     setState(() {
       loading = false;
     });
@@ -242,6 +253,4 @@ class _InstaListState extends State<InstaList> {
       });
     });
   }
-
-
 }

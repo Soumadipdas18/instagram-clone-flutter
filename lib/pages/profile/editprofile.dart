@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/firebase/auth.dart';
 import 'package:instagram_clone/firebase/database.dart';
@@ -291,32 +292,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final picker = ImagePicker();
 
+  _cropImage(filePath) async {
+    var croppedImage = await ImageCropper.cropImage(
+      sourcePath: filePath,
+      // maxWidth: 1080,
+      // maxHeight: 1080,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+    );
+    if (croppedImage != null) {
+        isparentloading = true;
+        EasyLoading.show(
+          status: 'uploading...',
+        );
+        File file = File(croppedImage!.path);
+        firebase_storage.Reference firebaseStorageRef = await firebase_storage
+            .FirebaseStorage.instance
+            .ref()
+            .child('userdp/${widget.uid}');
+        var uploadTask = firebaseStorageRef.putFile(file);
+        await uploadTask.whenComplete(() async {
+          String photoURL = await firebase_storage.FirebaseStorage.instance
+              .ref('userdp/${widget.uid}')
+              .getDownloadURL();
+          fauth.currentUser!.updatePhotoURL(photoURL);
+          await df.updatedp(photoURL, widget.uid);
+          setState(() {
+            _photoURL = photoURL;
+          });
+          print('done uploading');
+          isparentloading = false;
+          EasyLoading.showSuccess('Image updated successfully');
+        });
+
+    }
+  }
   Future pickImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      isparentloading = true;
-      EasyLoading.show(
-        status: 'uploading...',
-      );
-      File file = File(pickedFile!.path);
-      firebase_storage.Reference firebaseStorageRef = await firebase_storage
-          .FirebaseStorage.instance
-          .ref()
-          .child('userdp/${widget.uid}');
-      var uploadTask = firebaseStorageRef.putFile(file);
-      await uploadTask.whenComplete(() async {
-        String photoURL = await firebase_storage.FirebaseStorage.instance
-            .ref('userdp/${widget.uid}')
-            .getDownloadURL();
-        fauth.currentUser!.updatePhotoURL(photoURL);
-        await df.updatedp(photoURL, widget.uid);
-        setState(() {
-          _photoURL = photoURL;
-        });
-        print('done uploading');
-        isparentloading = false;
-        EasyLoading.showSuccess('Image updated successfully');
-      });
-    }
+    if (pickedFile != null)
+      await _cropImage(pickedFile.path);
+
   }
 }

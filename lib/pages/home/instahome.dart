@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/firebase/upload.dart';
 import 'package:instagram_clone/pages/postspage/instabody.dart';
@@ -53,7 +54,10 @@ class _InstaHomeState extends State<InstaHome> {
       InstaBody(widget.uid),
       Searchpage(),
       ProfileScreen(
-          username: widget.username, bio: widget.bio, phno: widget.phno)
+          username: widget.username,
+          bio: widget.bio,
+          phno: widget.phno,
+          uid: uid)
     ];
     return new Scaffold(
       body: screens[index],
@@ -165,10 +169,12 @@ class _InstaHomeState extends State<InstaHome> {
                   ],
                 ),
                 onTap: () {
-                  setState(() {
-                    index = 2;
-                    active = 'profile';
-                  });
+                  setState(
+                    () {
+                      index = 2;
+                      active = 'profile';
+                    },
+                  );
                 },
               ),
             ],
@@ -197,21 +203,32 @@ class _InstaHomeState extends State<InstaHome> {
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  FlatButton(
-                    child: const Text('Capture with camera'),
-                    onPressed: () async {
-                      await fup.uploadwithcamera();
-                    },
+                  Container(
+                    child: InkWell(
+                      child: new Container(
+                          height: 40.0,
+                          child:
+                              Center(child: const Text('Capture with camera'))),
+                      onTap: () async {
+                        var pickedFile =
+                            await picker.getImage(source: ImageSource.camera);
+                        if (pickedFile != null)
+                          await _cropImage(pickedFile.path);
+                      },
+                    ),
                   ),
                   Divider(),
                   // Cancel button
-                  FlatButton(
-                      child: const Text('Upload from device'),
-                      onPressed: () async {
+                  InkWell(
+                      child: new Container(
+                          height: 40.0,
+                          child:
+                              Center(child: const Text('Upload from device'))),
+                      onTap: () async {
                         var pickedFile =
                             await picker.getImage(source: ImageSource.gallery);
                         if (pickedFile != null)
-                          await getnamebio(pickedFile, 'upload');
+                          await _cropImage(pickedFile.path);
                       }),
                 ],
               )
@@ -224,86 +241,102 @@ class _InstaHomeState extends State<InstaHome> {
     );
   }
 
+  _cropImage(filePath) async {
+    var croppedImage = await ImageCropper.cropImage(
+      sourcePath: filePath,
+      // maxWidth: 1080,
+      // maxHeight: 1080,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.original,
+      ],
+    );
+    if (croppedImage != null) {
+      Navigator.pop(context);
+      await getnamebio(croppedImage, 'upload');
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
   Future<dynamic> getnamebio(var pickedFile, String upload) async {
     return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return WillPopScope(
-            onWillPop: () async {
-              return isparentloading ? false : true;
-            },
-            child: AlertDialog(
-              content: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Name',
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async {
+            return isparentloading ? false : true;
+          },
+          child: AlertDialog(
+            content: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Name',
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: nameController,
+                      validator: (value) {
+                        return value!.length != 0
+                            ? null
+                            : "Please Enter something";
+                      },
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: nameController,
-                        validator: (value) {
-                          return value!.length != 0
-                              ? null
-                              : "Please Enter something";
-                        },
-                      ),
+                  ),
+                  Text('Caption'),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: bioController,
+                      maxLines: 3,
+                      maxLength: 75,
+                      validator: (value) {
+                        return value!.length != 0
+                            ? null
+                            : "Please Enter something";
+                      },
                     ),
-                    Text('Caption'),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: bioController,
-                        maxLines: 3,
-                        maxLength: 75,
-                        validator: (value) {
-                          return value!.length != 0
-                              ? null
-                              : "Please Enter something";
-                        },
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      child: Text("Submit"),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          EasyLoading.show(
+                            status: 'uploading...',
+                          );
+                          isparentloading = true;
+                          await fup.uploadfromdevice(
+                              widget.username,
+                              user.photoURL!,
+                              nameController.text.trim(),
+                              bioController.text.trim(),
+                              uid,
+                              pickedFile);
+                          isparentloading = false;
+                          EasyLoading.showSuccess('Image updated successfully');
+                          Navigator.pop(context);
+                          Phoenix.rebirth(context);
+                        }
+                      },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RaisedButton(
-                        child: Text("Submit"),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            EasyLoading.show(
-                              status: 'uploading...',
-                            );
-                            isparentloading = true;
-                            await fup.uploadfromdevice(
-                                widget.username,
-                                user.photoURL!,
-                                nameController.text.trim(),
-                                bioController.text.trim(),
-                                uid,
-                                pickedFile);
-                            isparentloading = false;
-                            EasyLoading.showSuccess(
-                                'Image updated successfully');
-                            Navigator.pop(context);
-                            Phoenix.rebirth(context);
-                          }
-                        },
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

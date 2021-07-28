@@ -39,6 +39,9 @@ dependencies:
   flutter_easyloading: ^3.0.0
   image_picker: ^0.8.2
   firebase_storage: ^10.0.1
+  storage_path: ^0.2.0
+  image_cropper: ^1.4.1
+
 
 dev_dependencies:
   flutter_test:
