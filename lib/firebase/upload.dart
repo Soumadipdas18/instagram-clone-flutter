@@ -14,7 +14,7 @@ class FileUpload {
   uploadfromdevice(String username, String profileURL, String name, String bio,
       String uid, var pickedFile) async {
     if (pickedFile != null) {
-      var time = DateTime.now();
+      var time = DateTime.now().millisecondsSinceEpoch;
       String postid = '${name}_${time}';
       File file = File(pickedFile.path);
       firebase_storage.Reference firebaseStorageRef = await firebase_storage
@@ -27,7 +27,8 @@ class FileUpload {
             .ref('posts/${uid}/${postid}')
             .getDownloadURL();
         Map<String, dynamic> postdata = {
-          'who_posted': username,
+          'who_posted_username': username,
+          'who_posted_uid': uid,
           'name': name,
           'caption': bio,
           'url': photoURL,

@@ -88,7 +88,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     ),
                   ).whenComplete(() {
                     setState(() {
-                      Navigator.pushReplacementNamed(context, HOME);
+                      Navigator.pushReplacementNamed(context, PROFILEHOME);
                     });
                   });
                 },
