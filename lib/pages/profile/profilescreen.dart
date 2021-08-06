@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     postsbyuser.clear();
     if (collectionRef.snapshots().length != 0) {
       await collectionRef
-          .orderBy('time', descending: true)
+          .orderBy('time', descending: false)
           .get()
           .then((querysnapshot) {
         querysnapshot.docs.forEach((doc) {
@@ -77,7 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 who_liked: ['a', 'b', 'c', 'd'],
                 who_posted_url: doc['who_posted_url']),
           );
-          postsbyuser = List.from(postsbyuser.reversed);
         });
         last = querysnapshot.docs[querysnapshot.docs.length - 1];
         print(last);
@@ -91,8 +90,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    collectionRef =
-        FirebaseFirestore.instance.collection('posts').doc(widget.uid).collection('userposts');
+    collectionRef = FirebaseFirestore.instance
+        .collection('posts')
+        .doc(widget.uid)
+        .collection('userposts');
     getallposts(widget.uid);
   }
 

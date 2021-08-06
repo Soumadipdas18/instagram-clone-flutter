@@ -50,9 +50,37 @@ class DatabaseFirestore {
   }
 
   Future<void> updatedp(String url, String uid) async {
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .set({'dp': url}, SetOptions(merge: true));
+    await FirebaseFirestore.instance
+        .collection('allposts')
+        .where('who_posted_uid', isEqualTo: uid)
+        .snapshots()
+        .forEach((element) {
+      element.docs.forEach((element) {
+        FirebaseFirestore.instance
+            .collection('allposts')
+            .doc(element.id)
+            .update({'who_posted_url': url});
+      });
+    });
+    // await FirebaseFirestore.instance
+    //     .collection('posts')
+    //     .doc(uid)
+    //     .collection('userposts')
+    //     .where('who_posted_uid', isEqualTo: uid)
+    //     .snapshots()
+    //     .forEach((element1) {
+    //   element1.docs.forEach((element1) {
+    //     FirebaseFirestore.instance
+    //         .collection('posts')
+    //         .doc(uid)
+    //         .collection('userposts')
+    //         .doc(element1.id)
+    //         .update({'who_posted_url': url});
+    //   });
+    // });
   }
 }

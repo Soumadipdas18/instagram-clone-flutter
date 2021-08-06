@@ -1,21 +1,18 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:uuid/uuid.dart';
+
 
 class FileUpload {
+  var uuid = Uuid();
   var collectionRef = FirebaseFirestore.instance.collection('posts');
   var collectionRef2 = FirebaseFirestore.instance.collection('allposts');
-
-  uploadwithcamera() {}
-
   uploadfromdevice(String username, String profileURL, String name, String bio,
       String uid, var pickedFile) async {
     if (pickedFile != null) {
       var time = DateTime.now().millisecondsSinceEpoch;
-      String postid = '${name}_${time}';
+      String postid =uuid.v1();
       File file = File(pickedFile.path);
       firebase_storage.Reference firebaseStorageRef = await firebase_storage
           .FirebaseStorage.instance
@@ -34,13 +31,15 @@ class FileUpload {
           'url': photoURL,
           'time': time,
           'who_posted_url': profileURL,
+          'who_liked':[],
+          'post_id':postid
         };
         await collectionRef
             .doc(uid)
             .collection('userposts')
             .doc(postid)
             .set(postdata);
-        await collectionRef2.add(postdata);
+        await collectionRef2.doc(postid).set(postdata);
       });
     }
   }
