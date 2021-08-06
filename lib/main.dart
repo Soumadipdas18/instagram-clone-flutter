@@ -5,7 +5,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:instagram_clone/helper/sharedpref.dart';
 import 'package:instagram_clone/models/instaloadingscreen.dart';
-import 'package:instagram_clone/models/mediagridpage.dart';
 import 'package:instagram_clone/pages/auth/welcomescreen.dart';
 import 'package:instagram_clone/pages/dmpage/dm.dart';
 import 'package:instagram_clone/pages/home/instahome.dart';
@@ -81,8 +80,7 @@ class _MyAppState extends State<MyApp> {
                     phno: phno, uid: uid
                   ),
               DMPAGE: (context) => Dmpage(),
-              WELCOME: (context) => Welcome(),
-              MEDIAGRID: (context) => MediaGridpage(),
+              WELCOME: (context) => Welcome()
             },
             builder: EasyLoading.init(),
           );

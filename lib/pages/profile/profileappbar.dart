@@ -140,8 +140,6 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
                                     },
                                   );
                                 }
-
-                                ;
                                 return showAlertDialog(context);
                               },
                             ),
