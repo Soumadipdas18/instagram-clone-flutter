@@ -52,7 +52,7 @@ class _InstaHomeState extends State<InstaHome> {
   Widget build(BuildContext context) {
     List<Widget> screens = [
       InstaBody(widget.uid),
-      Searchpage(),
+      Searchpage(username: widget.username,),
       ProfileScreen(
           username: widget.username,
           bio: widget.bio,

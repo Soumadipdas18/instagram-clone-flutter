@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:instagram_clone/data/allposts.dart';
 import 'package:instagram_clone/data/favcategories.dart';
+import 'package:instagram_clone/data/searchpageusermodel.dart';
+import 'package:instagram_clone/models/searchpageusertile.dart';
 import 'package:instagram_clone/pages/searchpage/categorystoryitem.dart';
+import 'package:instagram_clone/pages/searchpage/trendingposts.dart';
 
 class Searchpage extends StatefulWidget {
-  const Searchpage({Key? key}) : super(key: key);
-
+  const Searchpage({Key? key, required this.username}) : super(key: key);
+  final String username;
   @override
   _SearchpageState createState() => _SearchpageState();
 }
@@ -15,25 +16,23 @@ class Searchpage extends StatefulWidget {
 class _SearchpageState extends State<Searchpage> {
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: Appbar(),
-        body: new StaggeredGridView.countBuilder(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          itemCount: trendingpost.length,
-          itemBuilder: (BuildContext context, int index) => Container(
-            decoration: BoxDecoration(
-              image: new DecorationImage(
-                  fit: BoxFit.fill,
-                  image: NetworkImage(trendingpost[index].what_posted)),
-            ),
-          ),
-          staggeredTileBuilder: (int index) => new StaggeredTile.count(
-              (index - 1) % 9 == 0 && index != 0 ? 2 : 1,
-              (index - 1) % 9 == 0 && index != 0 ? 2 : 1),
-          mainAxisSpacing: 1.0,
-          crossAxisSpacing: 1.0,
-        ));
+      appBar: Appbar(),
+      body: searchcontroller.text.length==0?TrendingPost():ListView.builder(
+          itemCount: users.length,
+          itemBuilder: (context, i) {
+            return InkWell(
+                onTap: () {},
+                child: SearchPageUserTile(
+                    name: users[i].username,
+                    username: users[i].username,
+                    photoURL: users[i].photoURL));
+          }),
+    );
   }
+
+  TextEditingController searchcontroller = new TextEditingController();
+  List<SearchPageUserModel> users = [];
+  List usernames = [];
 
   PreferredSizeWidget Appbar() {
     var size = MediaQuery.of(context).size;
@@ -56,6 +55,36 @@ class _SearchpageState extends State<Searchpage> {
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.grey.shade300),
                   child: TextField(
+                    onChanged: (text) {
+                      usernames = [];
+                      users = [];
+                      if (text.length != 0) {
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .where('name', isEqualTo: text)
+                            .get()
+                            .then((snapshot) {
+                          setState(() {
+                            snapshot.docs.forEach(
+                              (element) {
+                                if (!usernames.contains(element['name'])) {
+                                  usernames.insert(0, element['name']);
+                                  users.insert(
+                                      0,
+                                      SearchPageUserModel(
+                                        fullname: element['name'],
+                                        username: element['name'],
+                                        photoURL: element['dp'],
+                                      ));
+                                  print(usernames);
+                                }
+                              },
+                            );
+                          });
+                        });
+                      }
+                    },
+                    controller: searchcontroller,
                     decoration: InputDecoration(
                         hintText: 'Search',
                         border: InputBorder.none,
@@ -99,45 +128,4 @@ class _SearchpageState extends State<Searchpage> {
       preferredSize: new Size(size.width, 140),
     );
   }
-
-  getallposts() async {
-    print('getallposts called');
-    trendingpost.clear();
-    if (collectionRef.snapshots().length != 0) {
-      await collectionRef
-          .orderBy('time', descending: true)
-          .get()
-          .then((querysnapshot) {
-        querysnapshot.docs.forEach((doc) {
-          trendingpost.insert(
-            trendingpost.length,
-            allposts(
-                who_posted: doc['who_posted_username'],
-                when_posted: 'ddd',
-                what_posted: doc['url'],
-                caption_post: doc['caption'],
-                who_liked: ['a', 'b', 'c', 'd'],
-                who_posted_url: doc['who_posted_url']),
-          );
-          trendingpost = List.from(trendingpost.reversed);
-        });
-        last = querysnapshot.docs[querysnapshot.docs.length - 1];
-        print(last);
-      });
-    }
-    trendingpost = new List.from(trendingpost.reversed);
-    setState(() {
-      loading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    getallposts();
-  }
-
-  var collectionRef = FirebaseFirestore.instance.collection('allposts');
-  var last;
-  bool loading = true;
-  List<allposts> trendingpost = [];
 }
