@@ -9,13 +9,13 @@ class InstaBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new SafeArea(
-      child: new Scaffold(
-        appBar: new AppBar(
-          backgroundColor: new Color(0xfff8faf8),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xfff8faf8),
           centerTitle: true,
           elevation: 1.0,
-          leading: new Icon(
+          leading: Icon(
             Icons.camera_alt_outlined,
             color: Colors.black,
           ),
@@ -34,7 +34,7 @@ class InstaBody extends StatelessWidget {
             )
           ],
         ),
-        body: new Column(
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Flexible(

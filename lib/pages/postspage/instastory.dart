@@ -5,19 +5,19 @@ import 'package:instagram_clone/data/allstories.dart';
 class InstaStories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      child: new Column(
+    return Container(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Expanded(
-            child: new Padding(
+            child: Padding(
               padding: const EdgeInsets.only(top: 15.0),
-              child: new ListView.builder(
+              child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: stories.length,
-                itemBuilder: (context, index) => new Stack(
+                itemBuilder: (context, index) => Stack(
                   // alignment: Alignment.bottomRight,
                   children: <Widget>[
                     Column(children: [
@@ -26,9 +26,9 @@ class InstaStories extends StatelessWidget {
                         child: Container(
                           width: 60.0,
                           height: 60.0,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: new DecorationImage(
+                            image: DecorationImage(
                                 fit: BoxFit.fill,
                                 image: AssetImage(stories[index].what_posted)),
                           ),
@@ -55,10 +55,10 @@ class InstaStories extends StatelessWidget {
                             right: 10.0,
                             top: 50.0,
                             child: InkWell(
-                              child: new CircleAvatar(
+                              child: CircleAvatar(
                                 backgroundColor: Colors.blueAccent,
                                 radius: 10.0,
-                                child: new Icon(
+                                child: Icon(
                                   Icons.add,
                                   size: 14.0,
                                   color: Colors.white,
@@ -66,7 +66,7 @@ class InstaStories extends StatelessWidget {
                               ),
                               onTap: () {},
                             ))
-                        : new Container()
+                        : Container()
                   ],
                 ),
               ),

@@ -302,36 +302,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ],
     );
     if (croppedImage != null) {
-        isparentloading = true;
-        EasyLoading.show(
-          status: 'uploading...',
-        );
-        File file = File(croppedImage!.path);
-        firebase_storage.Reference firebaseStorageRef = await firebase_storage
-            .FirebaseStorage.instance
-            .ref()
-            .child('userdp/${widget.uid}');
-        var uploadTask = firebaseStorageRef.putFile(file);
-        await uploadTask.whenComplete(() async {
-          String photoURL = await firebase_storage.FirebaseStorage.instance
-              .ref('userdp/${widget.uid}')
-              .getDownloadURL();
-          fauth.currentUser!.updatePhotoURL(photoURL);
-          await df.updatedp(photoURL, widget.uid);
-          setState(() {
-            _photoURL = photoURL;
-          });
-          print('done uploading');
-          isparentloading = false;
-          EasyLoading.showSuccess('Image updated successfully');
+      isparentloading = true;
+      EasyLoading.show(
+        status: 'uploading...',
+      );
+      File file = File(croppedImage!.path);
+      firebase_storage.Reference firebaseStorageRef = await firebase_storage
+          .FirebaseStorage.instance
+          .ref()
+          .child('userdp/${widget.uid}');
+      var uploadTask = firebaseStorageRef.putFile(file);
+      await uploadTask.whenComplete(() async {
+        String photoURL = await firebase_storage.FirebaseStorage.instance
+            .ref('userdp/${widget.uid}')
+            .getDownloadURL();
+        fauth.currentUser!.updatePhotoURL(photoURL);
+        await df.updatedp(photoURL, widget.uid);
+        setState(() {
+          _photoURL = photoURL;
         });
-
+        print('done uploading');
+        EasyLoading.showSuccess('Image updated successfully');
+        isparentloading = false;
+      });
     }
   }
+
   Future pickImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    if (pickedFile != null)
-      await _cropImage(pickedFile.path);
-
+    if (pickedFile != null) await _cropImage(pickedFile.path);
   }
 }

@@ -44,6 +44,7 @@ class _InstaHomeState extends State<InstaHome> {
     uid = user.uid;
     index = widget.defaultpage;
     _photoURL = fauth.currentUser!.photoURL;
+    active=widget.defaultpage!=0?"profile":"Home";
   }
 
   bool isparentloading = false;
@@ -52,25 +53,32 @@ class _InstaHomeState extends State<InstaHome> {
   Widget build(BuildContext context) {
     List<Widget> screens = [
       InstaBody(widget.uid),
-      Searchpage(username: widget.username,),
+      Searchpage(
+        username: widget.username,
+        uid:widget.uid
+      ),
       ProfileScreen(
           username: widget.username,
           bio: widget.bio,
           phno: widget.phno,
-          uid: uid)
+          uid: uid,
+          otherphotourl: "false",
+          otheruserbio: "false",
+          otherusername: "false",
+          otheruserid: "false")
     ];
-    return new Scaffold(
+    return Scaffold(
       body: screens[index],
-      bottomNavigationBar: new Container(
+      bottomNavigationBar: Container(
         color: Colors.white,
         height: 50.0,
         alignment: Alignment.center,
-        child: new BottomAppBar(
-          child: new Row(
+        child: BottomAppBar(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              new IconButton(
+              IconButton(
                 icon: active == 'Home'
                     ? Icon(
                         Icons.home,
@@ -87,7 +95,7 @@ class _InstaHomeState extends State<InstaHome> {
                   });
                 },
               ),
-              new IconButton(
+             IconButton(
                   icon: active == 'Search'
                       ? Icon(
                           Icons.search,
@@ -102,8 +110,7 @@ class _InstaHomeState extends State<InstaHome> {
                       index = 1;
                       active = 'Search';
                     });
-                  }),
-              new IconButton(
+                  }), IconButton(
                   icon: active == 'Add'
                       ? Icon(
                           Icons.add_box,
@@ -118,8 +125,7 @@ class _InstaHomeState extends State<InstaHome> {
                       active = 'Add';
                     });
                     addfile();
-                  }),
-              new IconButton(
+                  }),IconButton(
                   icon: active == 'Love'
                       ? Icon(
                           Icons.favorite,
@@ -133,14 +139,13 @@ class _InstaHomeState extends State<InstaHome> {
                     setState(() {
                       active = 'Love';
                     });
-                  }),
-              new InkWell(
+                  }), InkWell(
                 child: Stack(
                   children: [
                     Container(
                       width: 30.0,
                       height: 30.0,
-                      decoration: new BoxDecoration(
+                      decoration:  BoxDecoration(
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -154,7 +159,7 @@ class _InstaHomeState extends State<InstaHome> {
                     Container(
                       width: 30.0,
                       height: 30.0,
-                      decoration: new BoxDecoration(
+                      decoration:  BoxDecoration(
                         shape: BoxShape.circle,
                         image: _photoURL != null
                             ? DecorationImage(
@@ -205,7 +210,7 @@ class _InstaHomeState extends State<InstaHome> {
                 children: <Widget>[
                   Container(
                     child: InkWell(
-                      child: new Container(
+                      child:  Container(
                           height: 40.0,
                           child:
                               Center(child: const Text('Capture with camera'))),
@@ -220,7 +225,7 @@ class _InstaHomeState extends State<InstaHome> {
                   Divider(),
                   // Cancel button
                   InkWell(
-                      child: new Container(
+                      child: Container(
                           height: 40.0,
                           child:
                               Center(child: const Text('Upload from device'))),

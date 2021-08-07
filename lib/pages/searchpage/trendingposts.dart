@@ -14,25 +14,25 @@ class _TrendingPostState extends State<TrendingPost> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: new StaggeredGridView.countBuilder(
-        crossAxisCount: 3,
-        shrinkWrap: true,
-        itemCount: trendingpost.length,
-        itemBuilder: (BuildContext context, int index) => Container(
-          decoration: BoxDecoration(
-            image: new DecorationImage(
-                fit: BoxFit.fill,
-                image: NetworkImage(trendingpost[index].what_posted)),
-          ),
+        body: StaggeredGridView.countBuilder(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      itemCount: trendingpost.length,
+      itemBuilder: (BuildContext context, int index) => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              fit: BoxFit.fill,
+              image: NetworkImage(trendingpost[index].what_posted)),
         ),
-        staggeredTileBuilder: (int index) => new StaggeredTile.count(
-            (index - 1) % 9 == 0 && index != 0 ? 2 : 1,
-            (index - 1) % 9 == 0 && index != 0 ? 2 : 1),
-        mainAxisSpacing: 1.0,
-        crossAxisSpacing: 1.0,
-      )
-    );
+      ),
+      staggeredTileBuilder: (int index) => StaggeredTile.count(
+          (index - 1) % 9 == 0 && index != 0 ? 2 : 1,
+          (index - 1) % 9 == 0 && index != 0 ? 2 : 1),
+      mainAxisSpacing: 1.0,
+      crossAxisSpacing: 1.0,
+    ));
   }
+
   getallposts() async {
     print('getallposts called');
     trendingpost.clear();
@@ -58,7 +58,7 @@ class _TrendingPostState extends State<TrendingPost> {
         print(last);
       });
     }
-    trendingpost = new List.from(trendingpost.reversed);
+    trendingpost = List.from(trendingpost.reversed);
     setState(() {
       loading = false;
     });

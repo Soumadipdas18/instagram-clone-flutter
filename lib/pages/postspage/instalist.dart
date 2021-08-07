@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:instagram_clone/models/instaloadingscreen.dart';
+import 'package:intl/intl.dart';
 import 'instastory.dart';
 
 class InstaList extends StatefulWidget {
@@ -29,6 +30,8 @@ class _InstaListState extends State<InstaList> {
       behavior: SnackBarBehavior.floating,
     );
     var deviceSize = MediaQuery.of(context).size;
+    var collectionRef = FirebaseFirestore.instance.collection('allposts');
+    var collectionRefposts = FirebaseFirestore.instance.collection('posts');
     return StreamBuilder<QuerySnapshot>(
         stream: collectionRef.orderBy('time', descending: true).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -40,8 +43,8 @@ class _InstaListState extends State<InstaList> {
             return ListView.builder(
               itemCount: snapshot.data!.docs.length + 1,
               itemBuilder: (context, index) => index == 0
-                  ? new SizedBox(
-                      child: new InstaStories(),
+                  ? SizedBox(
+                      child: InstaStories(),
                       height: 120,
                     )
                   : snapshot.data!.docs.length == 0
@@ -61,22 +64,22 @@ class _InstaListState extends State<InstaList> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      new Container(
+                                      Container(
                                         height: 40.0,
                                         width: 40.0,
-                                        decoration: new BoxDecoration(
+                                        decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          image: new DecorationImage(
+                                          image: DecorationImage(
                                               fit: BoxFit.fill,
                                               image: NetworkImage(
                                                   postdata[index - 1]
                                                       ['who_posted_url'])),
                                         ),
                                       ),
-                                      new SizedBox(
+                                      SizedBox(
                                         width: 10.0,
                                       ),
-                                      new Text(
+                                      Text(
                                         postdata[index - 1]
                                             ['who_posted_username'],
                                         style: TextStyle(
@@ -84,9 +87,26 @@ class _InstaListState extends State<InstaList> {
                                       )
                                     ],
                                   ),
-                                  new IconButton(
-                                    icon: Icon(Icons.more_vert),
-                                    onPressed: null,
+                                  PopupMenuButton(
+                                    color: Colors.white,
+                                    elevation: 40,
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        child: Text("Delete post"),
+                                        value: 1,
+                                      ),
+                                    ],
+                                    onSelected: (int index) {
+                                      if (index == 1)
+                                        collectionRef
+                                            .doc(postdata[index - 1].id)
+                                            .delete();
+                                      collectionRefposts
+                                          .doc(widget.uid)
+                                          .collection('userposts')
+                                          .doc(postdata[index - 1].id)
+                                          .delete();
+                                    },
                                   )
                                 ],
                               ),
@@ -94,8 +114,8 @@ class _InstaListState extends State<InstaList> {
                             Container(
                               height: deviceSize.width,
                               width: deviceSize.width,
-                              decoration: new BoxDecoration(
-                                image: new DecorationImage(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
                                     fit: BoxFit.fill,
                                     image: NetworkImage(
                                         postdata[index - 1]['url'])),
@@ -107,19 +127,25 @@ class _InstaListState extends State<InstaList> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  new Row(
+                                  Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      new IconButton(
-                                        icon: new Icon(postdata[index - 1]['who_liked']
-                                            .contains(widget.uid)?Icons.favorite:FontAwesomeIcons.heart),
+                                      IconButton(
+                                        icon: Icon(postdata[index - 1]
+                                                    ['who_liked']
+                                                .contains(widget.uid)
+                                            ? Icons.favorite
+                                            : FontAwesomeIcons.heart),
                                         color: postdata[index - 1]['who_liked']
                                                 .contains(widget.uid)
                                             ? Colors.red
                                             : Colors.black,
-                                        iconSize: postdata[index - 1]['who_liked']
-                                            .contains(widget.uid)?30:25,
+                                        iconSize: postdata[index - 1]
+                                                    ['who_liked']
+                                                .contains(widget.uid)
+                                            ? 30
+                                            : 25,
                                         onPressed: () {
                                           if (isPressed)
                                             ScaffoldMessenger.of(context)
@@ -139,16 +165,16 @@ class _InstaListState extends State<InstaList> {
                                                     ['who_liked']);
                                         },
                                       ),
-                                      new SizedBox(
+                                      SizedBox(
                                         width: 16.0,
                                       ),
-                                      new Icon(
+                                      Icon(
                                         FontAwesomeIcons.comment,
                                       ),
-                                      new SizedBox(
+                                      SizedBox(
                                         width: 16.0,
                                       ),
-                                      new Icon(FontAwesomeIcons.paperPlane),
+                                      Icon(FontAwesomeIcons.paperPlane),
                                     ],
                                   ),
                                 ],
@@ -190,24 +216,24 @@ class _InstaListState extends State<InstaList> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  new Container(
+                                  Container(
                                     height: 30.0,
                                     width: 30.0,
-                                    decoration: new BoxDecoration(
+                                    decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      image: new DecorationImage(
+                                      image: DecorationImage(
                                         fit: BoxFit.fill,
-                                        image: new NetworkImage(
+                                        image: NetworkImage(
                                             auth.currentUser!.photoURL!),
                                       ),
                                     ),
                                   ),
-                                  new SizedBox(
+                                  SizedBox(
                                     width: 10.0,
                                   ),
                                   Expanded(
-                                    child: new TextField(
-                                      decoration: new InputDecoration(
+                                    child: TextField(
+                                      decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Add a comment...",
                                       ),
@@ -220,7 +246,7 @@ class _InstaListState extends State<InstaList> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
-                                  postdata[index - 1]['who_posted_username'],
+                                  "${timeConvert(postdata[index - 1]['time'])}",
                                   style: TextStyle(color: Colors.grey)),
                             ),
                             SizedBox(
@@ -248,6 +274,12 @@ class _InstaListState extends State<InstaList> {
   unupdatelike(String id, List who_liked) {
     who_liked.remove(widget.uid);
     collectionRef.doc(id).update({'who_liked': who_liked});
+  }
+
+  String timeConvert(int timeInMillis) {
+    var time = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+    var formattedtime = DateFormat('MM/dd/yyyy, hh:mm a').format(time);
+    return formattedtime;
   }
 
   var collectionRef = FirebaseFirestore.instance.collection('allposts');

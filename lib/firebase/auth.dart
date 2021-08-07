@@ -22,6 +22,9 @@ class Auth {
           'dp': 'https://i.stack.imgur.com/l60Hf.png',
           'uid': userCredential.user!.uid,
           'searchname': setSearchParam(username),
+          'follower': [],
+          'following': [],
+          'post_ids': []
         };
         await userCredential.user!.updateDisplayName(username);
         await userCredential.user!
@@ -37,7 +40,7 @@ class Auth {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return ('Weak password');
-      } else if (e.code =='email-already-in-use') {
+      } else if (e.code == 'email-already-in-use') {
         return ('Email already in use');
       } else {
         return ('Error $e');

@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/constants/constants.dart';
 import 'package:instagram_clone/data/favcategories.dart';
 import 'package:instagram_clone/data/searchpageusermodel.dart';
 import 'package:instagram_clone/models/searchpageusertile.dart';
+import 'package:instagram_clone/pages/profile/profilescreen.dart';
 import 'package:instagram_clone/pages/searchpage/categorystoryitem.dart';
 import 'package:instagram_clone/pages/searchpage/trendingposts.dart';
 
 class Searchpage extends StatefulWidget {
-  const Searchpage({Key? key, required this.username}) : super(key: key);
-  final String username;
+  const Searchpage({Key? key, required this.username, required this.uid})
+      : super(key: key);
+  final String username, uid;
+
   @override
   _SearchpageState createState() => _SearchpageState();
 }
@@ -17,16 +21,40 @@ class _SearchpageState extends State<Searchpage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Appbar(),
-      body: searchcontroller.text.length==0?TrendingPost():ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (context, i) {
-            return InkWell(
-                onTap: () {},
-                child: SearchPageUserTile(
-                    name: users[i].username,
-                    username: users[i].username,
-                    photoURL: users[i].photoURL));
-          }),
+      body: searchcontroller.text.length == 0
+          ? TrendingPost()
+          : ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, i) {
+                return InkWell(
+                  onTap: () {
+                    if (widget.uid != users[i].uid) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                            username: "",
+                            bio: "",
+                            phno: "",
+                            uid: "",
+                            otheruserid: users[i].uid,
+                            otherusername: users[i].username,
+                            otheruserbio: users[i].bio,
+                            otherphotourl: users[i].photoURL,
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.pushNamed(context, PROFILEHOME);
+                    }
+                  },
+                  child: SearchPageUserTile(
+                      name: users[i].username,
+                      username: users[i].username,
+                      photoURL: users[i].photoURL),
+                );
+              },
+            ),
     );
   }
 
@@ -54,14 +82,14 @@ class _SearchpageState extends State<Searchpage> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.grey.shade300),
-                  child: TextField(
+                  child: TextFormField(
                     onChanged: (text) {
                       usernames = [];
                       users = [];
                       if (text.length != 0) {
                         FirebaseFirestore.instance
                             .collection('users')
-                            .where('name', isEqualTo: text)
+                            .where('searchname', arrayContains: text)
                             .get()
                             .then((snapshot) {
                           setState(() {
@@ -72,11 +100,11 @@ class _SearchpageState extends State<Searchpage> {
                                   users.insert(
                                       0,
                                       SearchPageUserModel(
-                                        fullname: element['name'],
-                                        username: element['name'],
-                                        photoURL: element['dp'],
-                                      ));
-                                  print(usernames);
+                                          fullname: element['name'],
+                                          username: element['name'],
+                                          photoURL: element['dp'],
+                                          bio: element['bio'],
+                                          uid: element['uid']));
                                 }
                               },
                             );
@@ -86,18 +114,19 @@ class _SearchpageState extends State<Searchpage> {
                     },
                     controller: searchcontroller,
                     decoration: InputDecoration(
-                        hintText: 'Search',
-                        border: InputBorder.none,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          // color:  Colors.grey,
-                        )),
+                      hintText: 'Search',
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        // color:  Colors.grey,
+                      ),
+                    ),
                     cursorColor: Colors.black,
                   ),
                 ),
                 SizedBox(
                   width: 10,
-                )
+                ),
               ],
             ),
           ),
