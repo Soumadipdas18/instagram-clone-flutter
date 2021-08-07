@@ -10,7 +10,6 @@ import 'package:instagram_clone/pages/dmpage/dm.dart';
 import 'package:instagram_clone/pages/home/instahome.dart';
 import 'package:instagram_clone/pages/auth/signin.dart';
 import 'package:instagram_clone/pages/auth/signup.dart';
-import 'package:instagram_clone/pages/profile/profilescreen.dart';
 import 'package:instagram_clone/constants/constants.dart';
 
 Future<void> main() async {
@@ -74,11 +73,6 @@ class _MyAppState extends State<MyApp> {
                   phno: phno,
                   defaultpage: 2,
                   uid: uid),
-              PROFILE: (context) => ProfileScreen(
-                    username: username,
-                    bio: bio,
-                    phno: phno, uid: uid
-                  ),
               DMPAGE: (context) => Dmpage(),
               WELCOME: (context) => Welcome()
             },

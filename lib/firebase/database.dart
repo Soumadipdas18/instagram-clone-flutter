@@ -50,22 +50,51 @@ class DatabaseFirestore {
   }
 
   Future<void> updatedp(String url, String uid) async {
+    var collecref = FirebaseFirestore.instance.collection('allposts');
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
-        .set({'dp': url}, SetOptions(merge: true));
-    await FirebaseFirestore.instance
-        .collection('allposts')
+        .update({'dp': url});
+
+    await collecref
         .where('who_posted_uid', isEqualTo: uid)
-        .snapshots()
-        .forEach((element) {
-      element.docs.forEach((element) {
-        FirebaseFirestore.instance
-            .collection('allposts')
-            .doc(element.id)
-            .update({'who_posted_url': url});
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((value) {
+        print("users: results: value");
+        collecref.doc(value.id).update({'who_posted_url': url});
       });
+    }).catchError((onError) {
+      print("getCloudFirestoreUsers: ERROR");
+      print(onError);
     });
+    // //     .forEach((element) {
+    // //       if(element.docs[i]!=null) {
+    // //         print(element.size);
+    // //         print(i);
+    // //         if (i == element.size)
+    // //           return;
+    // //         if (i != element.size) {
+    //           FirebaseFirestore.instance
+    //               // .collection('allposts')
+    //               // .doc(element.docs[i].id)
+    //               // .update({'who_posted_url': url});
+    // //         }
+    // //         i++;
+    // //         print("done");
+    // //         if (i == element.size)
+    // //           return;
+    // //       }
+    // //       else{
+    // //         print('nul');
+    // //         return;
+    // //       }
+    // // });
+    // print("exicuting initial");
+    //
+    //
+    //
+    // print("exit");
     // await FirebaseFirestore.instance
     //     .collection('posts')
     //     .doc(uid)

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/data/allposts.dart';
+import 'package:instagram_clone/pages/profile/otheruserprofiledetail.dart';
 import 'package:instagram_clone/pages/profile/profileappbar.dart';
 import 'package:instagram_clone/pages/profile/profiledetail.dart';
 
@@ -10,9 +11,20 @@ class ProfileScreen extends StatefulWidget {
       required this.username,
       required this.bio,
       required this.phno,
-      required this.uid})
+      required this.uid,
+      required this.otheruserid,
+      required this.otherusername,
+      required this.otheruserbio,
+      required this.otherphotourl})
       : super(key: key);
-  final String username, bio, phno, uid;
+  final String username,
+      bio,
+      phno,
+      uid,
+      otheruserid,
+      otherusername,
+      otheruserbio,
+      otherphotourl;
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -24,16 +36,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new PreferredSize(
+      appBar: PreferredSize(
           child: ProfileAppBar(
-            username: widget.username,
+            username: widget.otheruserid == "false"
+                ? widget.username
+                : widget.otherusername,
           ),
           preferredSize: Size(MediaQuery.of(context).size.width, 55)),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            ProfileDetail(
-                username: widget.username, bio: widget.bio, phno: widget.phno),
+            widget.otheruserid == "false"
+                ? ProfileDetail(
+                    username: widget.username,
+                    bio: widget.bio,
+                    phno: widget.phno,
+                    uid: widget.uid)
+                : OtherProfilePage(
+                    uid: widget.otheruserid,
+                    username: widget.otherusername,
+                    bio: widget.otheruserbio,
+                    photoURL: widget.otherphotourl,
+                  ),
             Wrap(
               spacing: 1,
               runSpacing: 1,
@@ -44,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: (MediaQuery.of(context).size.width - 3) / 3,
                     height: (MediaQuery.of(context).size.width - 3) / 3,
                     decoration: BoxDecoration(
-                      image: new DecorationImage(
+                      image: DecorationImage(
                           fit: BoxFit.fill,
                           image: NetworkImage(postsbyuser[index].what_posted)),
                     ),
@@ -82,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         print(last);
       });
     }
-    postsbyuser = new List.from(postsbyuser.reversed);
+    postsbyuser = List.from(postsbyuser.reversed);
     setState(() {
       loading = false;
     });
@@ -92,9 +116,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     collectionRef = FirebaseFirestore.instance
         .collection('posts')
-        .doc(widget.uid)
+        .doc(widget.otheruserid == "false" ? widget.uid : widget.otheruserid)
         .collection('userposts');
-    getallposts(widget.uid);
+    getallposts(
+        widget.otheruserid == "false" ? widget.uid : widget.otheruserid);
   }
 
   var collectionRef;

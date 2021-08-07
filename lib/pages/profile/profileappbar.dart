@@ -16,27 +16,27 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return new SafeArea(
-      child: new Container(
+    return SafeArea(
+      child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
         ),
-        child: new Column(
+        child: Column(
           children: <Widget>[
-            new Row(
+            Row(
               children: <Widget>[
-                new Spacer(),
-                new IconButton(
-                  icon: new Icon(Icons.lock),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.lock),
                   onPressed: () {},
                 ),
-                new Text(
+                Text(
                   widget.username,
-                  style: new TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                new IconButton(
-                  icon: new Icon(Icons.arrow_drop_down),
+                IconButton(
+                  icon: Icon(Icons.arrow_drop_down),
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
@@ -45,8 +45,8 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             ListTile(
-                              leading: new Icon(Icons.logout),
-                              title: new Text('Log Out'),
+                              leading: Icon(Icons.logout),
+                              title: Text('Log Out'),
                               onTap: () {
                                 showAlertDialog(BuildContext context) {
                                   // set up the buttons
@@ -89,8 +89,8 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
                               },
                             ),
                             ListTile(
-                              leading: new Icon(Icons.lock_outlined),
-                              title: new Text('Reset Password'),
+                              leading: Icon(Icons.lock_outlined),
+                              title: Text('Reset Password'),
                               onTap: () {
                                 showAlertDialog(BuildContext context) {
                                   // set up the buttons
@@ -140,6 +140,7 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
                                     },
                                   );
                                 }
+
                                 return showAlertDialog(context);
                               },
                             ),
@@ -149,7 +150,7 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
                     );
                   },
                 ),
-                new Spacer()
+                Spacer()
               ],
             ),
           ],

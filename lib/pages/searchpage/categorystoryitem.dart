@@ -10,22 +10,22 @@ class CategoryStoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.only(right: 10),
-      child: new Container(
-        decoration: new BoxDecoration(
+      child: Container(
+        decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.grey.shade300,
             border: Border.all(color: Colors.white.withOpacity(0.2))),
-        child: new Padding(
+        child: Padding(
           padding:
               const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-          child: new Row(children: [
-            new Icon(Icons.shop_rounded),
-            new SizedBox(width: 3),
-            new Text(
+          child: Row(children: [
+            Icon(Icons.shop_rounded),
+            SizedBox(width: 3),
+            Text(
               name,
-              style: new TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
             ),
           ]),
         ),
